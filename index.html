@@ -1,1 +1,75 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Varina – konfigurátor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <span class="brand">FLEXODISEM5</span>
+  <span class="top-note">Konfigurátor</span>
+</header>
 
+<main class="layout">
+  <section class="stage" id="stage">
+    <h1 class="title">Varina</h1>
+    <p class="subtitle">Navržena FLEXODISEM5</p>
+    <div class="product">
+      <img id="productImg" src="images/varina.png" alt="Varina">
+      <svg id="placeholder" viewBox="0 0 400 260" hidden>
+        <rect x="60" y="60" width="280" height="140" rx="70" fill="none" stroke="currentColor" stroke-width="3"/>
+        <text x="200" y="138" text-anchor="middle" font-size="22" fill="currentColor" font-family="Barlow">Sem přijde obrázek</text>
+      </svg>
+    </div>
+    <div class="live-spec" id="liveSpec"></div>
+  </section>
+
+  <aside class="panel">
+    <p class="desc">Varina je výrobek, který stojí za to. Vyberte si barvu, provedení a výbavu – cena se počítá průběžně.</p>
+
+    <div class="group">
+      <h2>Barva <span id="colorName"></span></h2>
+      <div class="swatches" id="colors"></div>
+    </div>
+
+    <div class="group">
+      <h2>Provedení</h2>
+      <div class="choices" id="material"></div>
+    </div>
+
+    <div class="group">
+      <h2>Velikost</h2>
+      <div class="choices three" id="size"></div>
+    </div>
+
+    <div class="group">
+      <h2>Výbava navíc</h2>
+      <div id="extras"></div>
+    </div>
+
+    <div class="summary">
+      <div class="row"><span>Základní cena</span><span id="basePrice"></span></div>
+      <div id="summaryLines"></div>
+      <div class="total"><span>Celkem</span><span id="total"></span></div>
+      <button class="buy" id="buyBtn">Objednat Varinu</button>
+      <p class="fine">Imaginární nákup – nic se opravdu neplatí.</p>
+    </div>
+  </aside>
+</main>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-box">
+    <h3>Objednávka odeslána</h3>
+    <p id="modalText"></p>
+    <button class="buy" id="closeBtn">Zavřít</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
