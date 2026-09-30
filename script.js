@@ -25,7 +25,7 @@ const EXTRAS = [
 ];
 
 // ====== STAV ======
-const state = { color: 0, material: 0, size: 1, extras: new Set() };
+const state = { color: 2, material: 0, size: 1, extras: new Set() };
 
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString('cs-CZ') + ' Kč';
@@ -131,4 +131,3 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') $('modal').h
 // ====== START ======
 renderExtras();
 update();
-
