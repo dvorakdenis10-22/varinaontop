@@ -1,101 +1,90 @@
-// ====== DATA (sem si upravíš ceny, názvy a barvy) ======
 const BASE_PRICE = 10000;
-
 const COLORS = [
-  { name: 'Grafitová',  hex: '#3a3d42', price: 0 },
+  { name: 'Grafitová', hex: '#3a3d42', price: 0 },
   { name: 'Polární bílá', hex: '#f1f2f3', price: 0 },
-  { name: 'Rubínová',   hex: '#9c1b2f', price: 900 },
+  { name: 'Rubínová', hex: '#8a1f2b', price: 900 },
   { name: 'Hlubinná modrá', hex: '#1f3f73', price: 900 },
-  { name: 'Šalvějová',  hex: '#7d8f75', price: 1500 },
+  { name: 'Šalvějová', hex: '#7d8f75', price: 1500 }
 ];
 const MATERIALS = [
   { name: 'Standard', note: 'Základní provedení', price: 0 },
-  { name: 'Karbon',   note: 'Lehčí a pevnější',   price: 2500 },
+  { name: 'Karbon', note: 'Lehčí a pevnější', price: 2500 }
 ];
 const SIZES = [
   { name: 'S', note: 'Kompaktní', price: 0 },
   { name: 'M', note: 'Univerzální', price: 500 },
-  { name: 'L', note: 'Velká', price: 1000 },
+  { name: 'L', note: 'Velká', price: 1000 }
 ];
 const EXTRAS = [
   { name: 'Prodloužená záruka (5 let)', price: 1200 },
-  { name: 'Gravírování jména',          price: 800 },
-  { name: 'Expresní doručení',          price: 600 },
-  { name: 'Dárkové balení',             price: 400 },
+  { name: 'Gravírování jména', price: 800 },
+  { name: 'Expresní doručení', price: 600 },
+  { name: 'Dárkové balení', price: 400 }
 ];
 
-// ====== STAV ======
-const state = { color: 2, material: 0, size: 1, extras: new Set() };
-
+const state = { color: 2, material: 0, size: 1, extras: [] };
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString('cs-CZ') + ' Kč';
-const plus = n => n === 0 ? 'v ceně' : '+ ' + fmt(n);
+const plus = n => (n === 0 ? 'v ceně' : '+ ' + fmt(n));
 
-// ====== VYKRESLENÍ VOLEB ======
-function renderColors() {
-  $('colors').innerHTML = '';
-  COLORS.forEach((c, i) => {
-    const b = document.createElement('button');
-    b.className = 'swatch';
-    b.style.setProperty('--c', c.hex);
-    b.setAttribute('role', 'radio');
-    b.setAttribute('aria-label', `${c.name}, ${plus(c.price)}`);
-    b.setAttribute('aria-checked', state.color === i);
-    b.onclick = () => { state.color = i; update(true); };
-    $('colors').appendChild(b);
-  });
-}
-function renderChoices(id, list, key) {
-  $(id).innerHTML = '';
+function renderGroup(id, list, key, type) {
+  const box = $(id);
+  box.innerHTML = '';
   list.forEach((o, i) => {
     const b = document.createElement('button');
-    b.className = 'choice';
-    b.setAttribute('role', 'radio');
-    b.setAttribute('aria-checked', state[key] === i);
-    b.innerHTML = `${o.name}<small>${o.note} · ${plus(o.price)}</small>`;
-    b.onclick = () => { state[key] = i; update(); };
-    $(id).appendChild(b);
+    b.type = 'button';
+    b.setAttribute('aria-checked', state[key] === i ? 'true' : 'false');
+    if (type === 'swatch') {
+      b.className = 'swatch';
+      b.style.setProperty('--c', o.hex);
+      b.setAttribute('aria-label', o.name + ', ' + plus(o.price));
+    } else {
+      b.className = 'choice';
+      b.innerHTML = o.name + '<small>' + o.note + ' · ' + plus(o.price) + '</small>';
+    }
+    b.addEventListener('click', () => { state[key] = i; update(type === 'swatch'); });
+    box.appendChild(b);
   });
 }
+
 function renderExtras() {
-  $('extras').innerHTML = '';
+  const box = $('extras');
+  box.innerHTML = '';
   EXTRAS.forEach((e, i) => {
     const l = document.createElement('label');
     l.className = 'extra';
-    l.innerHTML = `<span class="l"><input type="checkbox" ${state.extras.has(i) ? 'checked' : ''}>${e.name}</span><span class="p">+ ${fmt(e.price)}</span>`;
-    l.querySelector('input').onchange = ev => {
-      ev.target.checked ? state.extras.add(i) : state.extras.delete(i);
-      update();
-    };
-    $('extras').appendChild(l);
+    l.innerHTML = '<span class="l"><input type="checkbox">' + e.name + '</span><span class="p">+ ' + fmt(e.price) + '</span>';
+    l.querySelector('input').addEventListener('change', ev => {
+      if (ev.target.checked) state.extras.push(i);
+      else state.extras = state.extras.filter(x => x !== i);
+      update(false);
+    });
+    box.appendChild(l);
   });
 }
 
-// ====== VÝPOČET A AKTUALIZACE ======
 function calc() {
   const lines = [];
-  const add = (label, price) => price > 0 && lines.push({ label, price });
+  const add = (label, price) => { if (price > 0) lines.push({ label, price }); };
   add('Barva ' + COLORS[state.color].name, COLORS[state.color].price);
   add('Provedení ' + MATERIALS[state.material].name, MATERIALS[state.material].price);
   add('Velikost ' + SIZES[state.size].name, SIZES[state.size].price);
   state.extras.forEach(i => add(EXTRAS[i].name, EXTRAS[i].price));
-  const total = BASE_PRICE + lines.reduce((s, l) => s + l.price, 0);
-  return { lines, total };
+  return { lines, total: BASE_PRICE + lines.reduce((s, l) => s + l.price, 0) };
 }
 
 function update(colorChanged) {
   const c = COLORS[state.color];
-  document.documentElement.style.setProperty('--glow', c.hex);
   $('colorName').textContent = c.name;
-  $('liveSpec').textContent = `${c.name} · ${MATERIALS[state.material].name} · ${SIZES[state.size].name}`;
-  renderColors();
-  renderChoices('material', MATERIALS, 'material');
-  renderChoices('size', SIZES, 'size');
+  $('dot').style.background = c.hex;
+  $('liveSpec').textContent = c.name + ' · ' + MATERIALS[state.material].name + ' · ' + SIZES[state.size].name;
+  renderGroup('colors', COLORS, 'color', 'swatch');
+  renderGroup('material', MATERIALS, 'material');
+  renderGroup('size', SIZES, 'size');
 
   const { lines, total } = calc();
   $('basePrice').textContent = fmt(BASE_PRICE);
-  $('summaryLines').innerHTML = lines
-    .map(l => `<div class="row add"><span>${l.label}</span><span>+ ${fmt(l.price)}</span></div>`).join('');
+  $('summaryLines').innerHTML = lines.map(l => '<div class="row add"><span>' + l.label + '</span><span>+ ' + fmt(l.price) + '</span></div>').join('');
   const t = $('total');
   t.textContent = fmt(total);
   t.classList.remove('bump'); void t.offsetWidth; t.classList.add('bump');
@@ -103,31 +92,21 @@ function update(colorChanged) {
   if (colorChanged) {
     const img = $('productImg');
     img.classList.add('swap');
-    setTimeout(() => img.classList.remove('swap'), 250);
+    setTimeout(() => img.classList.remove('swap'), 300);
   }
 }
 
-// ====== OBRÁZEK (fallback, když soubor chybí) ======
-$('productImg').addEventListener('error', () => {
-  $('productImg').hidden = true;
-  $('placeholder').hidden = false;
-});
-
-// ====== OBJEDNÁVKA ======
-$('buyBtn').onclick = () => {
-  const { lines, total } = calc();
-  const c = COLORS[state.color];
+$('buyBtn').addEventListener('click', () => {
+  const { total } = calc();
+  const extras = state.extras.map(i => EXTRAS[i].name).join(', ');
   $('modalText').textContent =
-    `Varina – ${c.name}, ${MATERIALS[state.material].name}, velikost ${SIZES[state.size].name}\n` +
-    (state.extras.size ? `Výbava navíc: ${[...state.extras].map(i => EXTRAS[i].name).join(', ')}\n` : '') +
-    `Celkem: ${fmt(total)}`;
+    'Varina – ' + COLORS[state.color].name + ', ' + MATERIALS[state.material].name + ', velikost ' + SIZES[state.size].name + '\n' +
+    (extras ? 'Výbava navíc: ' + extras + '\n' : '') + 'Celkem: ' + fmt(total);
   $('modal').hidden = false;
-  $('closeBtn').focus();
-};
-$('closeBtn').onclick = () => $('modal').hidden = true;
-$('modal').onclick = e => { if (e.target.id === 'modal') $('modal').hidden = true; };
+});
+$('closeBtn').addEventListener('click', () => { $('modal').hidden = true; });
+$('modal').addEventListener('click', e => { if (e.target.id === 'modal') $('modal').hidden = true; });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') $('modal').hidden = true; });
 
-// ====== START ======
 renderExtras();
-update();
+update(false);
