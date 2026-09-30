@@ -17,10 +17,10 @@ button{font:inherit;cursor:pointer}
   background:radial-gradient(ellipse at 50% 62%,color-mix(in srgb,var(--glow) 55%,#fff) 0%,var(--stage) 62%);transition:background .5s}
 .title{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:clamp(4rem,11vw,9rem);line-height:.9;letter-spacing:-.01em}
 .subtitle{color:var(--muted);margin-top:8px;font-weight:300;font-size:1.15rem}
-.product{width:min(640px,90%);aspect-ratio:3/2;display:grid;place-items:center;margin:24px 0;color:var(--muted)}
-.product img{max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 28px 24px rgba(0,0,0,.28));transition:transform .5s}
+.product{height:min(62vh,640px);aspect-ratio:3/4;max-width:90%;overflow:hidden;box-shadow:0 30px 50px -20px rgba(0,0,0,.45);display:grid;place-items:center;margin:24px 0;color:var(--muted)}
+.product img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
 .product img.swap{transform:scale(.96)}
-.product svg{width:100%}
+.product svg{width:100%;background:var(--stage)}
 .live-spec{font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;letter-spacing:.04em;color:var(--ink)}
 
 .panel{padding:40px 36px;overflow-y:auto;border-left:1px solid var(--line);max-height:calc(100vh - 50px);position:sticky;top:50px}
