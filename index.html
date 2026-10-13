@@ -6,69 +6,511 @@
 <title>Varina – FLEXODISEM5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0c0c0e;--panel:#16161a;--ink:#f4f1ea;--muted:#9a9aa3;--line:#2a2a31;--red:#ff3b2f}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:'Manrope',system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
+button{font:inherit;cursor:pointer;color:inherit}
+a{color:inherit;text-decoration:none}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.display{font-family:'Anton','Impact',sans-serif;font-weight:400;text-transform:uppercase;line-height:.9}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:20px 5vw;background:#0c0c0ee6;backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.brand{font-family:'Anton',sans-serif;letter-spacing:.12em;font-size:1.2rem}
+.nav a.btn{padding:10px 22px;background:var(--red);font-weight:800;font-size:.85rem;letter-spacing:.1em}
+
+.hero{min-height:100vh;display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:4vw;padding:130px 5vw 70px;
+  background:radial-gradient(800px 600px at 25% 40%,#ff3b2f22,transparent 70%),var(--bg)}
+.tag{display:inline-block;padding:8px 16px;border:1px solid var(--red);color:var(--red);font-weight:800;letter-spacing:.2em;font-size:.8rem}
+.hero h1{font-size:clamp(6rem,20vw,19rem);margin:22px 0 10px;letter-spacing:-.01em}
+.hero p.lead{font-size:1.4rem;max-width:30ch;color:#d6d3cb;font-weight:300}
+.hero-actions{display:flex;align-items:center;gap:28px;margin-top:38px;flex-wrap:wrap}
+.cta{display:inline-block;padding:20px 44px;background:var(--red);font-weight:800;letter-spacing:.12em;transition:transform .2s,background .2s}
+.cta:hover{transform:translateY(-3px);background:#ff5a4f}
+.price{font-family:'Anton',sans-serif;font-size:2.2rem}
+.price small{display:block;font-family:'Manrope';font-size:.8rem;color:var(--muted);letter-spacing:.15em}
+.hero-photo{position:relative;justify-self:center;width:100%;max-width:560px}
+.hero-photo::before{content:"";position:absolute;inset:26px -26px -26px 26px;background:var(--red)}
+.hero-photo img{position:relative;width:100%;aspect-ratio:4/5;object-fit:cover;display:block}
+
+.specs{display:grid;grid-template-columns:repeat(4,1fr);background:var(--red);color:#0c0c0e}
+.specs div{padding:30px 24px;border-right:1px solid #0c0c0e33;text-align:center}
+.specs div:last-child{border-right:0}
+.specs strong{display:block;font-family:'Anton',sans-serif;font-weight:400;font-size:1.7rem;text-transform:uppercase}
+.specs span{font-weight:600;font-size:.95rem}
+
+.cfg-head{text-align:center;padding:120px 5vw 50px}
+.cfg-head h2{font-size:clamp(3rem,8vw,7rem)}
+.cfg-head p{color:var(--muted);margin-top:16px;font-size:1.15rem}
+
+.cfg{display:grid;grid-template-columns:1fr 1fr;gap:5vw;padding:0 6vw 120px;max-width:1700px;margin:0 auto;align-items:start}
+.view{position:sticky;top:100px}
+.frame{aspect-ratio:4/5;max-height:78vh;margin:0 auto;overflow:hidden;box-shadow:16px 16px 0 var(--red)}
+.frame img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+.frame img.swap{transform:scale(1.05)}
+.caption{display:flex;align-items:center;gap:12px;justify-content:center;margin-top:46px;font-weight:600;letter-spacing:.06em}
+#dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--ink);transition:background .3s}
+
+.opts{max-width:640px}
+.group{margin-bottom:38px}
+.group h3{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;font-size:1.8rem;letter-spacing:.03em;margin-bottom:16px}
+.group em{font-family:'Manrope';font-style:normal;font-weight:400;font-size:.95rem;color:var(--red);margin-left:12px;text-transform:none}
+.swatches{display:flex;gap:20px;flex-wrap:wrap}
+.swatch{width:54px;height:54px;border-radius:50%;border:2px solid var(--line);background:var(--c);position:relative}
+.swatch[aria-checked="true"]::after{content:"";position:absolute;inset:-8px;border:2px solid var(--red);border-radius:50%}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.choices.three{grid-template-columns:repeat(3,1fr)}
+.choice{text-align:left;padding:18px;border:2px solid var(--line);background:var(--panel);font-weight:800;transition:border-color .2s}
+.choice small{display:block;color:var(--muted);font-weight:400;font-size:.85rem}
+.choice:hover{border-color:#555}
+.choice[aria-checked="true"]{border-color:var(--red)}
+.extra{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--line);cursor:pointer;font-weight:600}
+.extra:first-child{border-top:1px solid var(--line)}
+.extra .l{display:flex;align-items:center;gap:14px}
+.extra input{accent-color:var(--red);width:20px;height:20px}
+.extra .p{color:var(--muted);font-weight:400}
+
+.summary{margin-top:46px;padding:34px;background:var(--panel);border-top:4px solid var(--red)}
+.row{display:flex;justify-content:space-between;padding:4px 0;color:var(--muted)}
+.row.add{color:var(--ink)}
+.total{display:flex;justify-content:space-between;align-items:baseline;margin:20px 0 26px;padding-top:20px;border-top:1px solid var(--line);font-weight:800}
+.total strong{font-family:'Anton',sans-serif;font-weight:400;font-size:3.6rem;color:var(--red)}
+.total strong.bump{animation:bump .3s}
+@keyframes bump{50%{transform:scale(1.06)}}
+.buy{width:100%;padding:20px;background:var(--red);color:var(--ink);border:0;font-weight:800;letter-spacing:.14em;transition:background .2s}
+.buy:hover{background:#ff5a4f}
+.fine{text-align:center;color:var(--muted);font-size:.85rem;margin-top:12px}
+.foot{text-align:center;padding:40px;color:var(--muted);font-size:.85rem;letter-spacing:.14em;border-top:1px solid var(--line)}
+
+.modal{position:fixed;inset:0;z-index:30;background:#000b;display:grid;place-items:center;padding:20px}
+.modal-box{background:var(--panel);border-top:4px solid var(--red);padding:40px;max-width:460px;width:100%}
+.modal-box h3{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;font-size:2.4rem;margin-bottom:14px}
+.modal-box p{white-space:pre-line;color:var(--muted);margin-bottom:26px}
+
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;padding-top:110px}
+  .hero-photo{max-width:420px;margin-top:20px}
+  .specs{grid-template-columns:1fr 1fr}
+  .specs div:nth-child(2){border-right:0}
+  .specs div:nth-child(-n+2){border-bottom:1px solid #0c0c0e33}
+  .cfg{grid-template-columns:1fr;gap:60px;padding:0 22px 80px}
+  .view{position:static}
+  .opts{max-width:none}
+  .choices.three{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.nav nav{display:flex;gap:12px}
+.nav a.ghost{padding:10px 18px;border:1px solid #555;font-weight:800;font-size:.85rem;letter-spacing:.1em}
+.cta.alt{background:transparent;border:2px solid var(--ink)}
+.cta.alt:hover{background:var(--ink);color:var(--bg)}
+.drive{padding:110px 5vw;background:linear-gradient(180deg,var(--bg),#13201a 50%,var(--bg));text-align:center}
+.drive h2{font-size:clamp(3rem,8vw,7rem)}
+.drive p.sub{color:var(--muted);margin:14px auto 36px;max-width:56ch;font-size:1.1rem}
+.arena{position:relative;max-width:900px;margin:0 auto;box-shadow:16px 16px 0 var(--red)}
+.arena canvas{display:block;width:100%;height:auto;background:#2f6b3a}
+.hud{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:12px 18px;font-weight:800;letter-spacing:.12em;font-size:.85rem;background:linear-gradient(#000a,transparent);pointer-events:none}
+.hud b{font-family:'Anton',sans-serif;font-weight:400;font-size:1.5rem;margin-left:6px;color:var(--red)}
+.gmsg{position:absolute;inset:0;background:#000b;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px}
+.gmsg h3{font-size:3.2rem}
+.gmsg p{color:#ddd;max-width:40ch}
+.touch{display:none;justify-content:center;gap:14px;margin-top:34px}
+.tk{width:76px;height:76px;background:var(--panel);border:2px solid var(--line);font-size:1.6rem;touch-action:none;user-select:none}
+.tk:active{background:var(--red)}
+.wide{max-width:780px;max-height:92vh;overflow:auto}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0}
+.fld.full{grid-column:1/-1}
+.fld label.l{display:block;font-size:.75rem;letter-spacing:.12em;color:var(--muted);margin-bottom:5px;font-weight:800}
+.fld input[type=text],.fld input[type=email],.fld input[type=tel],.fld select,.fld textarea{width:100%;padding:13px;background:var(--bg);border:2px solid var(--line);color:var(--ink);font:inherit}
+.fld .bad{border-color:var(--red)}
+.opt{display:flex;justify-content:space-between;align-items:center;padding:13px 14px;border:2px solid var(--line);margin-bottom:8px;cursor:pointer;font-weight:600}
+.opt input{accent-color:var(--red);margin-right:10px}
+.opt:has(input:checked){border-color:var(--red)}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:.9rem;color:var(--muted)}
+.chk input{accent-color:var(--red);margin-top:5px}
+#formErr{color:var(--red);font-weight:800;min-height:1.4em;margin-bottom:10px}
+.cosum{border-top:1px solid var(--line);padding-top:14px;margin-top:6px}
+.cosum .total strong{font-size:2.6rem}
+.cosum .total{margin:12px 0 18px;padding-top:12px}
+.done h3{color:var(--red)}
+.donebox{background:var(--bg);padding:18px;margin-bottom:22px;color:var(--ink);line-height:1.8}
+@media (max-width:900px){.nav a.ghost{display:none}.touch{display:flex}.fgrid{grid-template-columns:1fr}.gmsg h3{font-size:2.2rem}}
+</style>
 </head>
 <body>
 <header class="nav">
   <span class="brand">FLEXODISEM5</span>
-  <a href="#konfigurator">Konfigurátor</a>
+  <nav><a class="ghost" href="#testdrive">TEST DRIVE</a><a class="btn" href="#konfigurator">KONFIGUROVAT</a></nav>
 </header>
 
 <section class="hero">
-  <img class="hero-img" src="IMG_8979.jpeg" alt="Varina">
-  <div class="hero-shade"></div>
-  <div class="hero-text">
-    <p class="kicker">Navržena FLEXODISEM5</p>
-    <h1>Varina</h1>
+  <div>
+    <span class="tag">NAVRŽENA FLEXODISEM5</span>
+    <h1 class="display">Varina</h1>
     <p class="lead">Ručně laděný stroj pro ty, kdo nechtějí jezdit jako všichni ostatní.</p>
-    <a class="cta" href="#konfigurator">Sestavit svou Varinu</a>
-    <p class="from">Od 10 000 Kč</p>
+    <div class="hero-actions">
+      <a class="cta" href="#konfigurator">SESTAVIT SVOU VARINU</a>
+      <a class="cta alt" href="#testdrive">TEST DRIVE</a>
+      <div class="price"><small>OD</small>10 000 Kč</div>
+    </div>
   </div>
+  <div class="hero-photo"><img src="IMG_8979.jpeg" alt="Varina"></div>
 </section>
 
 <section class="specs">
   <div><strong>Ruční výroba</strong><span>Každý kus zvlášť</span></div>
   <div><strong>Záruka 2 roky</strong><span>Rozšíření až na 5</span></div>
-  <div><strong>Design FLEXODISEM5</strong><span>Originální návrh</span></div>
+  <div><strong>Originální design</strong><span>FLEXODISEM5</span></div>
   <div><strong>Dodání do 14 dní</strong><span>Nebo expresně</span></div>
 </section>
 
-<section class="cfg-head" id="konfigurator"><p class="kicker">Konfigurátor</p><h2>Sestavte si svou Varinu</h2></section>
+<section class="cfg-head" id="konfigurator">
+  <h2 class="display">Sestavte si svou Varinu</h2>
+  <p>Vyberte barvu, provedení a výbavu. Cena se počítá průběžně.</p>
+</section>
+
 <section class="cfg">
   <div class="view">
     <div class="frame"><img id="productImg" src="IMG_8979.jpeg" alt="Varina"></div>
     <p class="caption"><i id="dot"></i><span id="liveSpec"></span></p>
   </div>
-
   <div class="opts">
-    <p class="intro">Vyberte barvu, provedení a výbavu. Cena se počítá průběžně.</p>
-
     <div class="group"><h3>Barva <em id="colorName"></em></h3><div class="swatches" id="colors"></div></div>
     <div class="group"><h3>Provedení</h3><div class="choices" id="material"></div></div>
     <div class="group"><h3>Velikost</h3><div class="choices three" id="size"></div></div>
+    <div class="group"><h3>Kola</h3><div class="choices three" id="wheels"></div></div>
     <div class="group"><h3>Výbava navíc</h3><div id="extras"></div></div>
-
     <div class="summary">
       <div class="row"><span>Základní cena</span><span id="basePrice"></span></div>
       <div id="summaryLines"></div>
-      <div class="total"><span>Celkem</span><strong id="total"></strong></div>
-      <button class="buy" id="buyBtn" type="button">Objednat Varinu</button>
+      <div class="total"><span>CELKEM</span><strong id="total"></strong></div>
+      <button class="buy" id="buyBtn" type="button">OBJEDNAT VARINU</button>
       <p class="fine">Imaginární nákup, nic se opravdu neplatí.</p>
     </div>
   </div>
 </section>
 
-<footer class="foot">© FLEXODISEM5 · Varina</footer>
+<section class="drive" id="testdrive">
+  <h2 class="display">Test drive</h2>
+  <p class="sub">Projeď se Varinou po dvorku, sbírej zlaťáky a vyhýbej se balíkům slámy. Barva i kabina odpovídají tvé konfiguraci.</p>
+  <div class="arena">
+    <div class="hud"><span>ČAS<b id="hudTime">40</b></span><span>BODY<b id="hudScore">0</b></span><span>REKORD<b id="best">0</b></span></div>
+    <canvas id="game" width="900" height="520"></canvas>
+    <div class="gmsg" id="gameMsg">
+      <h3 class="display" id="gameTitle">Připraven?</h3>
+      <p id="gameText">Šipky nebo W A S D. Zlaťáky ti přidávají čas, balíky tě zpomalí.</p>
+      <button class="cta" id="startBtn" type="button">START</button>
+    </div>
+  </div>
+  <div class="touch">
+    <button class="tk" data-k="l" type="button">◀</button>
+    <button class="tk" data-k="u" type="button">▲</button>
+    <button class="tk" data-k="d" type="button">▼</button>
+    <button class="tk" data-k="r" type="button">▶</button>
+  </div>
+</section>
+
+<footer class="foot">© FLEXODISEM5 · VARINA</footer>
 
 <div class="modal" id="modal" hidden>
-  <div class="modal-box">
-    <h3>Objednávka odeslána</h3>
-    <p id="modalText"></p>
-    <button class="buy" id="closeBtn" type="button">Zavřít</button>
+  <div class="modal-box wide">
+    <div id="coForm">
+      <h3>Dokončení objednávky</h3>
+      <div class="cosum" id="coSummary" style="border:0;margin:0;padding:0"></div>
+      <form id="orderForm" novalidate>
+        <div class="fgrid">
+          <div class="fld"><label class="l" for="f_fname">JMÉNO</label><input type="text" id="f_fname" autocomplete="given-name"></div>
+          <div class="fld"><label class="l" for="f_lname">PŘÍJMENÍ</label><input type="text" id="f_lname" autocomplete="family-name"></div>
+          <div class="fld"><label class="l" for="f_email">E-MAIL</label><input type="email" id="f_email" autocomplete="email"></div>
+          <div class="fld"><label class="l" for="f_phone">TELEFON</label><input type="tel" id="f_phone" autocomplete="tel"></div>
+          <div class="fld full"><label class="l" for="f_street">ULICE A ČÍSLO POPISNÉ</label><input type="text" id="f_street" autocomplete="street-address"></div>
+          <div class="fld"><label class="l" for="f_city">MĚSTO</label><input type="text" id="f_city" autocomplete="address-level2"></div>
+          <div class="fld"><label class="l" for="f_zip">PSČ</label><input type="text" id="f_zip" inputmode="numeric" placeholder="123 45" autocomplete="postal-code"></div>
+          <div class="fld full"><label class="l" for="f_country">STÁT</label><select id="f_country"><option>Česko</option><option>Slovensko</option><option>Polsko</option><option>Německo</option><option>Rakousko</option></select></div>
+          <div class="fld full"><label class="l">DOPRAVA</label><div id="shipBox"></div></div>
+          <div class="fld full"><label class="l">PLATBA</label><div id="payBox"></div></div>
+          <div class="fld full"><label class="l" for="f_note">POZNÁMKA KE ZÁSILCE (NEPOVINNÉ)</label><textarea id="f_note" rows="2"></textarea></div>
+          <div class="fld full"><label class="chk"><input type="checkbox" id="f_agree"><span>Souhlasím s obchodními podmínkami. Je to imaginární objednávka, nic se opravdu neodesílá ani neplatí.</span></label></div>
+        </div>
+        <div id="formErr" role="alert"></div>
+        <div class="total"><span>CELKEM S DOPRAVOU</span><strong id="coTotal"></strong></div>
+        <button class="buy" type="submit">ODESLAT OBJEDNÁVKU</button>
+        <p class="fine"><a href="#" id="cancelBtn" style="text-decoration:underline">Zpět ke konfigurátoru</a></p>
+      </form>
+    </div>
+    <div id="coDone" class="done" hidden>
+      <h3>Objednávka přijata</h3>
+      <div class="donebox" id="doneText"></div>
+      <button class="buy" id="closeBtn" type="button">ZAVŘÍT</button>
+    </div>
   </div>
 </div>
 
-<script src="script.js"></script>
+<script>
+const BASE_PRICE = 10000;
+const COLORS = [
+  { name: 'Grafitová', hex: '#3a3d42', price: 0 },
+  { name: 'Polární bílá', hex: '#f1f2f3', price: 0 },
+  { name: 'Rubínová', hex: '#c21f2f', price: 900 },
+  { name: 'Hlubinná modrá', hex: '#1f3f73', price: 900 },
+  { name: 'Šalvějová', hex: '#7d8f75', price: 1500 }
+];
+const MATERIALS = [
+  { name: 'Standard', note: 'Základní provedení', price: 0 },
+  { name: 'Karbon', note: 'Lehčí a pevnější', price: 2500 }
+];
+const SIZES = [
+  { name: 'S', note: 'Kompaktní', price: 0 },
+  { name: 'M', note: 'Univerzální', price: 500 },
+  { name: 'L', note: 'Velká', price: 1000 }
+];
+const WHEELS = [
+  { name: 'Terénní', note: 'Jako na fotce', price: 0 },
+  { name: 'Silniční', note: 'Hladký běh', price: 700 },
+  { name: 'Široké', note: 'Na trávu a bahno', price: 1100 }
+];
+const EXTRAS = [
+  { name: 'Kabina z traktoru Zetor', price: 7900 },
+  { name: 'Potahy na volant (kůže)', price: 450 },
+  { name: 'Vyhřívaná sedačka', price: 1800 },
+  { name: 'LED světlomety', price: 1300 },
+  { name: 'Zrcátka navíc (pár)', price: 600 },
+  { name: 'Zadní nosič', price: 900 },
+  { name: 'Houkačka s vlastním zvukem', price: 700 },
+  { name: 'Držák na telefon', price: 250 },
+  { name: 'Plachta na uložení', price: 550 },
+  { name: 'Prodloužená záruka (5 let)', price: 1200 },
+  { name: 'Gravírování jména', price: 800 },
+  { name: 'Dárkové balení', price: 400 }
+];
+const SHIPPING = [
+  { name: 'Osobní odběr', price: 0 },
+  { name: 'Kurýr (do 5 dnů)', price: 390 },
+  { name: 'Přeprava na paletě', price: 990 }
+];
+const PAYMENTS = ['Platba kartou online', 'Bankovní převod', 'Dobírka (+ 0 Kč)'];
+const state = { color: 2, material: 0, size: 1, wheels: 0, extras: [], ship: 0, pay: 0 };
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString('cs-CZ') + ' Kč';
+const plus = n => (n === 0 ? 'v ceně' : '+ ' + fmt(n));
+
+function renderGroup(id, list, key, type) {
+  const box = $(id); box.innerHTML = '';
+  list.forEach((o, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-checked', state[key] === i ? 'true' : 'false');
+    if (type === 'swatch') {
+      b.className = 'swatch'; b.style.setProperty('--c', o.hex);
+      b.setAttribute('aria-label', o.name + ', ' + plus(o.price));
+    } else {
+      b.className = 'choice';
+      b.innerHTML = o.name + '<small>' + o.note + ' · ' + plus(o.price) + '</small>';
+    }
+    b.addEventListener('click', () => { state[key] = i; update(type === 'swatch'); });
+    box.appendChild(b);
+  });
+}
+function renderExtras() {
+  const box = $('extras'); box.innerHTML = '';
+  EXTRAS.forEach((e, i) => {
+    const l = document.createElement('label'); l.className = 'extra';
+    l.innerHTML = '<span class="l"><input type="checkbox">' + e.name + '</span><span class="p">+ ' + fmt(e.price) + '</span>';
+    l.querySelector('input').addEventListener('change', ev => {
+      state.extras = ev.target.checked ? state.extras.concat(i) : state.extras.filter(x => x !== i);
+      update(false);
+    });
+    box.appendChild(l);
+  });
+}
+function calc() {
+  const lines = [];
+  const add = (label, price) => { if (price > 0) lines.push({ label, price }); };
+  add('Barva ' + COLORS[state.color].name, COLORS[state.color].price);
+  add('Provedení ' + MATERIALS[state.material].name, MATERIALS[state.material].price);
+  add('Velikost ' + SIZES[state.size].name, SIZES[state.size].price);
+  add('Kola ' + WHEELS[state.wheels].name, WHEELS[state.wheels].price);
+  state.extras.forEach(i => add(EXTRAS[i].name, EXTRAS[i].price));
+  return { lines, total: BASE_PRICE + lines.reduce((s, l) => s + l.price, 0) };
+}
+function update(colorChanged) {
+  const c = COLORS[state.color];
+  $('colorName').textContent = c.name;
+  $('dot').style.background = c.hex;
+  $('liveSpec').textContent = c.name + ' · ' + MATERIALS[state.material].name + ' · ' + SIZES[state.size].name + ' · kola ' + WHEELS[state.wheels].name;
+  renderGroup('colors', COLORS, 'color', 'swatch');
+  renderGroup('material', MATERIALS, 'material');
+  renderGroup('size', SIZES, 'size');
+  renderGroup('wheels', WHEELS, 'wheels');
+  const { lines, total } = calc();
+  $('basePrice').textContent = fmt(BASE_PRICE);
+  $('summaryLines').innerHTML = lines.map(l => '<div class="row add"><span>' + l.label + '</span><span>+ ' + fmt(l.price) + '</span></div>').join('');
+  const t = $('total'); t.textContent = fmt(total);
+  t.classList.remove('bump'); void t.offsetWidth; t.classList.add('bump');
+  if (colorChanged) {
+    const img = $('productImg'); img.classList.add('swap');
+    setTimeout(() => img.classList.remove('swap'), 300);
+  }
+}
+
+/* ===== OBJEDNÁVKA ===== */
+function coRender() {
+  const { lines, total } = calc();
+  $('coSummary').innerHTML =
+    '<div class="row"><span>Varina – ' + COLORS[state.color].name + ', ' + MATERIALS[state.material].name + ', ' + SIZES[state.size].name + '</span><span>' + fmt(BASE_PRICE) + '</span></div>' +
+    lines.map(l => '<div class="row add"><span>' + l.label + '</span><span>+ ' + fmt(l.price) + '</span></div>').join('');
+  $('coTotal').textContent = fmt(total + SHIPPING[state.ship].price);
+}
+function buildChoices() {
+  $('shipBox').innerHTML = SHIPPING.map((s, i) =>
+    '<label class="opt"><span><input type="radio" name="ship" value="' + i + '"' + (i === state.ship ? ' checked' : '') + '>' + s.name + '</span><span>' + plus(s.price) + '</span></label>').join('');
+  $('payBox').innerHTML = PAYMENTS.map((p, i) =>
+    '<label class="opt"><span><input type="radio" name="pay" value="' + i + '"' + (i === state.pay ? ' checked' : '') + '>' + p + '</span></label>').join('');
+  document.querySelectorAll('input[name=ship]').forEach(r => r.addEventListener('change', () => { state.ship = +r.value; coRender(); }));
+  document.querySelectorAll('input[name=pay]').forEach(r => r.addEventListener('change', () => { state.pay = +r.value; }));
+}
+function openOrder() {
+  $('coForm').hidden = false; $('coDone').hidden = true; $('formErr').textContent = '';
+  buildChoices(); coRender();
+  $('modal').hidden = false;
+}
+function closeOrder() { $('modal').hidden = true; }
+$('buyBtn').addEventListener('click', openOrder);
+$('closeBtn').addEventListener('click', closeOrder);
+$('cancelBtn').addEventListener('click', e => { e.preventDefault(); closeOrder(); });
+$('modal').addEventListener('click', e => { if (e.target.id === 'modal') closeOrder(); });
+
+$('orderForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = id => $(id).value.trim();
+  const errs = [];
+  const bad = (id, msg) => { errs.push(msg); $(id).classList.add('bad'); };
+  ['f_fname', 'f_lname', 'f_email', 'f_phone', 'f_street', 'f_city', 'f_zip'].forEach(id => $(id).classList.remove('bad'));
+  if (v('f_fname').length < 2) bad('f_fname', 'Vyplň jméno.');
+  if (v('f_lname').length < 2) bad('f_lname', 'Vyplň příjmení.');
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(v('f_email'))) bad('f_email', 'Zadej platný e-mail.');
+  if (v('f_phone').replace(/\D/g, '').length < 9) bad('f_phone', 'Telefon má mít alespoň 9 číslic.');
+  if (v('f_street').length < 3 || !/\d/.test(v('f_street'))) bad('f_street', 'Zadej ulici i číslo popisné.');
+  if (v('f_city').length < 2) bad('f_city', 'Vyplň město.');
+  if (!/^\d{3}\s?\d{2}$/.test(v('f_zip'))) bad('f_zip', 'PSČ musí mít 5 číslic (např. 123 45).');
+  if (!$('f_agree').checked) errs.push('Potvrď souhlas s podmínkami.');
+  $('formErr').textContent = errs[0] || '';
+  if (errs.length) return;
+
+  const total = calc().total + SHIPPING[state.ship].price;
+  const num = 'VAR-' + String(Math.floor(100000 + Math.random() * 900000));
+  const extras = state.extras.map(i => EXTRAS[i].name).join(', ') || 'žádná';
+  $('doneText').innerHTML =
+    '<b>Číslo objednávky: ' + num + '</b><br>' +
+    'Varina – ' + COLORS[state.color].name + ', ' + MATERIALS[state.material].name + ', velikost ' + SIZES[state.size].name + ', kola ' + WHEELS[state.wheels].name + '<br>' +
+    'Výbava navíc: ' + extras + '<br>' +
+    'Doprava: ' + SHIPPING[state.ship].name + ' · Platba: ' + PAYMENTS[state.pay] + '<br>' +
+    'Doručit na: ' + v('f_fname') + ' ' + v('f_lname') + ', ' + v('f_street') + ', ' + v('f_zip') + ' ' + v('f_city') + ', ' + $('f_country').value + '<br>' +
+    '<b>Celkem: ' + fmt(total) + '</b><br><br>Potvrzení by přišlo na ' + v('f_email') + '. Je to imaginární objednávka, nic se neodeslalo.';
+  $('coForm').hidden = true; $('coDone').hidden = false;
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeOrder(); });
+
+/* ===== TEST DRIVE ===== */
+(function () {
+  const cv = $('game'), cx = cv.getContext('2d'), W = 900, H = 520;
+  const keys = {}; let run = false, last = 0, car, coins, rocks, score, time, best = 0, hitCd = 0;
+  try { best = +localStorage.getItem('varinaBest') || 0; } catch (e) {}
+  $('best').textContent = best;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const far = (x, y, d) => Math.hypot(x - W / 2, y - H / 2) > d;
+
+  function reset() {
+    car = { x: W / 2, y: H / 2, a: -Math.PI / 2, v: 0 };
+    rocks = []; while (rocks.length < 7) { const r = { x: rnd(50, W - 50), y: rnd(70, H - 50), r: rnd(22, 30) }; if (far(r.x, r.y, 110)) rocks.push(r); }
+    spawnCoins(); score = 0; time = 40; hitCd = 0;
+  }
+  function spawnCoins() {
+    coins = [];
+    while (coins.length < 10) {
+      const c = { x: rnd(40, W - 40), y: rnd(70, H - 40) };
+      if (far(c.x, c.y, 90) && rocks.every(r => Math.hypot(r.x - c.x, r.y - c.y) > r.r + 24)) coins.push(c);
+    }
+  }
+  function step(dt) {
+    const up = keys.u, dn = keys.d;
+    if (up) car.v = Math.min(250, car.v + 280 * dt);
+    else if (dn) car.v = Math.max(-100, car.v - 320 * dt);
+    else car.v -= car.v * 1.4 * dt;
+    const turn = (keys.r ? 1 : 0) - (keys.l ? 1 : 0);
+    car.a += turn * 2.7 * dt * Math.max(-1, Math.min(1, car.v / 90));
+    car.x += Math.cos(car.a) * car.v * dt; car.y += Math.sin(car.a) * car.v * dt;
+    if (car.x < 24 || car.x > W - 24 || car.y < 24 || car.y > H - 24) {
+      car.x = Math.max(24, Math.min(W - 24, car.x)); car.y = Math.max(24, Math.min(H - 24, car.y)); car.v *= -0.4;
+    }
+    coins = coins.filter(c => { if (Math.hypot(c.x - car.x, c.y - car.y) < 28) { score += 100; time += 1.5; return false; } return true; });
+    if (!coins.length) spawnCoins();
+    rocks.forEach(r => {
+      const d = Math.hypot(r.x - car.x, r.y - car.y);
+      if (d < r.r + 20) {
+        const nx = (car.x - r.x) / d, ny = (car.y - r.y) / d;
+        car.x = r.x + nx * (r.r + 20); car.y = r.y + ny * (r.r + 20); car.v *= -0.35;
+        if (hitCd <= 0) { time -= 1; hitCd = .5; }
+      }
+    });
+    hitCd -= dt; time -= dt;
+    $('hudTime').textContent = Math.max(0, Math.ceil(time)); $('hudScore').textContent = score;
+    if (time <= 0) end();
+  }
+  function drawCar() {
+    cx.save(); cx.translate(car.x, car.y); cx.rotate(car.a);
+    cx.fillStyle = 'rgba(0,0,0,.28)'; cx.fillRect(-24, -12, 56, 34);
+    cx.fillStyle = '#111';
+    [[-28, -18], [-28, 11], [12, -18], [12, 11]].forEach(p => cx.fillRect(p[0], p[1], 16, 7));
+    cx.fillStyle = COLORS[state.color].hex; cx.fillRect(-22, -10, 50, 20);
+    cx.fillStyle = '#222'; cx.fillRect(-18, -7, 14, 14);
+    cx.strokeStyle = '#000'; cx.lineWidth = 2; cx.beginPath(); cx.arc(2, 0, 5, 0, 7); cx.stroke();
+    cx.fillStyle = '#ffe9a8'; cx.beginPath(); cx.arc(28, -7, 3, 0, 7); cx.arc(28, 7, 3, 0, 7); cx.fill();
+    if (state.extras.includes(0)) { cx.fillStyle = 'rgba(180,220,240,.6)'; cx.strokeStyle = '#222'; cx.fillRect(-24, -13, 36, 26); cx.strokeRect(-24, -13, 36, 26); }
+    cx.restore();
+  }
+  function draw() {
+    cx.fillStyle = '#2f6b3a'; cx.fillRect(0, 0, W, H);
+    cx.fillStyle = '#35763f'; for (let x = 0; x < W; x += 120) cx.fillRect(x, 0, 60, H);
+    rocks.forEach(r => {
+      cx.fillStyle = '#c9a24a'; cx.beginPath(); cx.arc(r.x, r.y, r.r, 0, 7); cx.fill();
+      cx.strokeStyle = '#8a6a22'; cx.lineWidth = 3; cx.beginPath(); cx.arc(r.x, r.y, r.r * .6, 0, 7); cx.stroke();
+    });
+    const p = 1 + Math.sin(performance.now() / 160) * .12;
+    coins.forEach(c => {
+      cx.fillStyle = '#ffd24a'; cx.beginPath(); cx.arc(c.x, c.y, 10 * p, 0, 7); cx.fill();
+      cx.strokeStyle = '#a77a00'; cx.lineWidth = 2; cx.stroke();
+    });
+    drawCar();
+  }
+  function loop(ts) {
+    if (!run) return;
+    const dt = Math.min((ts - last) / 1000, .05); last = ts;
+    step(dt); if (run) { draw(); requestAnimationFrame(loop); }
+  }
+  function start() { reset(); run = true; $('gameMsg').hidden = true; last = performance.now(); requestAnimationFrame(loop); }
+  function end() {
+    run = false; draw();
+    if (score > best) { best = score; $('best').textContent = best; try { localStorage.setItem('varinaBest', best); } catch (e) {} }
+    $('gameTitle').textContent = 'Konec jízdy';
+    $('gameText').textContent = 'Nasbíráno ' + score + ' bodů' + (score >= best && score > 0 ? ' – nový rekord!' : '.');
+    $('startBtn').textContent = 'ZNOVU'; $('gameMsg').hidden = false;
+  }
+  const map = { ArrowUp: 'u', KeyW: 'u', ArrowDown: 'd', KeyS: 'd', ArrowLeft: 'l', KeyA: 'l', ArrowRight: 'r', KeyD: 'r' };
+  window.addEventListener('keydown', e => { const k = map[e.code]; if (k) { keys[k] = true; if (run) e.preventDefault(); } });
+  window.addEventListener('keyup', e => { const k = map[e.code]; if (k) keys[k] = false; });
+  document.querySelectorAll('.tk').forEach(b => {
+    const k = b.dataset.k;
+    b.addEventListener('pointerdown', e => { e.preventDefault(); keys[k] = true; });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, () => { keys[k] = false; }));
+  });
+  $('startBtn').addEventListener('click', start);
+  reset(); draw();
+})();
+
+renderExtras(); update(false);
+</script>
 </body>
 </html>
